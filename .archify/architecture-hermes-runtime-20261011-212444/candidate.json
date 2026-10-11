@@ -1,0 +1,280 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Hermes Agent runtime",
+    "locale": "en",
+    "output": ".archify/architecture-hermes-runtime-20261011-212444/hermes-runtime.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/qayyumu/hermes-agent.git",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "0faf0938ebdc4420e11070822cf4f9db09eb4260"
+    },
+    "views": [
+      {
+        "id": "cli-turn",
+        "label": "CLI turn",
+        "focus": ["person", "cli", "agent", "turn", "model"],
+        "note": "A typed message enters HermesCLI, which runs the shared loop against the model provider."
+      },
+      {
+        "id": "tool-dispatch",
+        "label": "Tool dispatch",
+        "focus": ["turn", "tools"],
+        "note": "When the model returns tool calls, the turn round reaches registry.dispatch."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "person",
+      "type": "external",
+      "label": "Person",
+      "sublabel": "one user turn",
+      "pos": [40, 300],
+      "size": [140, 68],
+      "sources": [
+        {
+          "path": "hermes_cli/cli_chat_turn_mixin.py",
+          "line": 49,
+          "end_line": 60,
+          "label": "chat accepts one user turn"
+        }
+      ]
+    },
+    {
+      "id": "cli",
+      "type": "frontend",
+      "label": "Hermes CLI",
+      "sublabel": "HermesCLI.chat",
+      "pos": [300, 300],
+      "size": [168, 68],
+      "sources": [
+        {
+          "path": "cli.py",
+          "line": 894,
+          "end_line": 894,
+          "label": "HermesCLI class"
+        },
+        {
+          "path": "hermes_cli/cli_agent_setup_mixin.py",
+          "line": 665,
+          "end_line": 686,
+          "label": "builds CLI AIAgent"
+        },
+        {
+          "path": "hermes_cli/cli_chat_turn_mixin.py",
+          "line": 369,
+          "end_line": 374,
+          "label": "calls run_conversation"
+        }
+      ]
+    },
+    {
+      "id": "gateway",
+      "type": "backend",
+      "label": "Messaging gateway",
+      "sublabel": "start_gateway",
+      "pos": [578, 90],
+      "size": [188, 68],
+      "sources": [
+        {
+          "path": "gateway/run.py",
+          "line": 5750,
+          "end_line": 5754,
+          "label": "start_gateway"
+        },
+        {
+          "path": "gateway/run_turn_runner.py",
+          "line": 1115,
+          "end_line": 1130,
+          "label": "builds gateway AIAgent"
+        },
+        {
+          "path": "gateway/run_turn_runner.py",
+          "line": 1722,
+          "end_line": 1724,
+          "label": "calls run_conversation"
+        }
+      ]
+    },
+    {
+      "id": "agent",
+      "type": "backend",
+      "label": "AIAgent",
+      "sublabel": "run_conversation",
+      "pos": [588, 300],
+      "size": [168, 68],
+      "sources": [
+        {
+          "path": "run_agent.py",
+          "line": 214,
+          "end_line": 219,
+          "label": "AIAgent facade"
+        },
+        {
+          "path": "agent/turn_facade.py",
+          "line": 22,
+          "end_line": 46,
+          "label": "forwards to the loop"
+        },
+        {
+          "path": "agent/session_persistence.py",
+          "line": 290,
+          "end_line": 299,
+          "label": "flushes transcript rows"
+        }
+      ]
+    },
+    {
+      "id": "turn",
+      "type": "backend",
+      "label": "Turn loop",
+      "sublabel": "conversation_loop",
+      "pos": [866, 300],
+      "size": [188, 68],
+      "sources": [
+        {
+          "path": "agent/conversation_loop.py",
+          "line": 1709,
+          "end_line": 1759,
+          "label": "run_conversation"
+        },
+        {
+          "path": "agent/conversation_loop.py",
+          "line": 1497,
+          "end_line": 1511,
+          "label": "calls perform_api_call"
+        },
+        {
+          "path": "agent/turn_tool_round.py",
+          "line": 163,
+          "end_line": 163,
+          "label": "runs tool calls"
+        }
+      ]
+    },
+    {
+      "id": "model",
+      "type": "external",
+      "label": "Model provider",
+      "sublabel": "api_mode client",
+      "pos": [1174, 300],
+      "size": [176, 68],
+      "sources": [
+        {
+          "path": "agent/turn_api_call.py",
+          "line": 67,
+          "end_line": 105,
+          "label": "perform_api_call"
+        },
+        {
+          "path": "agent/chat_completion_helpers.py",
+          "line": 760,
+          "end_line": 793,
+          "label": "api_mode dispatch"
+        }
+      ]
+    },
+    {
+      "id": "tools",
+      "type": "backend",
+      "label": "Tool registry",
+      "sublabel": "registry.dispatch",
+      "pos": [866, 488],
+      "size": [188, 68],
+      "sources": [
+        {
+          "path": "run_agent.py",
+          "line": 1294,
+          "end_line": 1306,
+          "label": "execute tool calls"
+        },
+        {
+          "path": "model_tools.py",
+          "line": 822,
+          "end_line": 838,
+          "label": "registry.dispatch"
+        },
+        {
+          "path": "tools/registry.py",
+          "line": 893,
+          "end_line": 910,
+          "label": "runs the handler"
+        }
+      ]
+    },
+    {
+      "id": "sessions",
+      "type": "database",
+      "label": "SessionDB",
+      "sublabel": "profile state.db",
+      "pos": [584, 488],
+      "size": [176, 68],
+      "sources": [
+        {
+          "path": "hermes_state.py",
+          "line": 178,
+          "end_line": 201,
+          "label": "state.db under home"
+        },
+        {
+          "path": "hermes_state.py",
+          "line": 461,
+          "end_line": 467,
+          "label": "SQLite session store"
+        },
+        {
+          "path": "hermes_state_messages.py",
+          "line": 458,
+          "end_line": 463,
+          "label": "one write transaction"
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Profile home",
+      "wraps": ["sessions"]
+    }
+  ],
+  "connections": [
+    { "id": "person-to-cli", "from": "person", "to": "cli", "label": "user message", "variant": "emphasis" },
+    { "id": "cli-to-agent", "from": "cli", "to": "agent", "label": "starts turn" },
+    { "id": "gateway-to-agent", "from": "gateway", "to": "agent", "label": "inbound turn", "fromSide": "bottom", "toSide": "top" },
+    { "id": "agent-to-turn", "from": "agent", "to": "turn", "label": "forwards" },
+    { "id": "turn-to-model", "from": "turn", "to": "model", "label": "LLM request", "variant": "emphasis" },
+    { "id": "turn-to-tools", "from": "turn", "to": "tools", "label": "dispatch", "fromSide": "bottom", "toSide": "top" },
+    { "id": "agent-to-sessions", "from": "agent", "to": "sessions", "label": "append rows", "fromSide": "bottom", "toSide": "top" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Surfaces",
+      "items": [
+        "CLI constructs AIAgent with platform cli and the profile SessionDB",
+        "The messaging gateway constructs or reuses AIAgent and calls the same run_conversation"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Turn",
+      "items": [
+        "The loop calls perform_api_call, then runs returned tool calls",
+        "The provider call branches on api_mode; the default client uses chat.completions.create"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Persistence",
+      "items": [
+        "The agent flush writes new transcript rows in one SessionDB transaction",
+        "The default file is get_hermes_home() / state.db"
+      ]
+    }
+  ]
+}

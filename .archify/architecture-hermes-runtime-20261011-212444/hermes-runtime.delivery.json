@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "3fa2e772-56c8-4bf7-8c12-62a0e78d761c",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "/home/usman/dev/hermes-agent/.archify/architecture-hermes-runtime-20261011-212444/candidate.json",
+  "output": "/home/usman/dev/hermes-agent/.archify/architecture-hermes-runtime-20261011-212444/hermes-runtime.html",
+  "specification": {
+    "sha256": "2fd65bfaaca0261986dd15d3fdcd148b0a4e3bf71d0e3759428ecaad1507433f",
+    "bytes": 7533
+  },
+  "artifact": {
+    "sha256": "4fe4c7ff2053bc802062add05b324e509c05b63202ce92169ba7757d6a72db6d",
+    "bytes": 763059
+  }
+}
